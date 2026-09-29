@@ -1,1 +1,30 @@
-<MudletPackage version="1.001"><AliasPackage><Alias isActive="yes" isFolder="no"><name>LE Examine</name><packageName>le-examine</packageName><regex>(?i)^le(?:\s+(.*))?\s*$</regex><script>leExamine.command(matches[2] or "")</script></Alias></AliasPackage><ScriptPackage><Script isActive="yes" isFolder="no"><name>LE Examine</name><packageName>le-examine</packageName><script source="core.lua" /><eventHandlerList /></Script></ScriptPackage></MudletPackage>
+<MudletPackage version="1.001">
+  <AliasPackage>
+    <Alias isActive="yes" isFolder="no">
+      <name>LE Examine</name>
+      <packageName>le-examine</packageName>
+      <regex>(?i)^le(?:\s+(.*))?\s*$</regex>
+      <script>leExamine.command(matches[2] or "")</script>
+    </Alias>
+    <Alias isActive="yes" isFolder="no">
+      <name>Vendor Manager - givevendor</name>
+      <packageName>le-examine</packageName>
+      <regex>(?i)^givevendor(?:\s+(.*))?\s*$</regex>
+      <script>lotjVendorManager.give(matches[2] or "")</script>
+    </Alias>
+    <Alias isActive="yes" isFolder="no">
+      <name>Vendor Manager - menu</name>
+      <packageName>le-examine</packageName>
+      <regex>(?i)^vendormgr(?:\s+(.*))?\s*$</regex>
+      <script>lotjVendorManager.menu(matches[2] or "")</script>
+    </Alias>
+  </AliasPackage>
+  <ScriptPackage>
+    <Script isActive="yes" isFolder="no">
+      <name>LotJ Vendor Manager</name>
+      <packageName>le-examine</packageName>
+      <script source="core.lua" />
+      <eventHandlerList />
+    </Script>
+  </ScriptPackage>
+</MudletPackage>

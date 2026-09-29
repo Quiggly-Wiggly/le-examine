@@ -6,9 +6,9 @@ import zipfile
 
 ROOT=Path(__file__).resolve().parents[1]
 PACKAGE='le-examine'
-TITLE='LE Examine'
-VERSION='1.1.0'
-ARTIFACT='LE Examine.mpackage'
+TITLE='LotJ Vendor Manager'
+VERSION='1.2.0'
+ARTIFACT='LotJ Vendor Manager.mpackage'
 
 def package_files():
     doc=ET.parse(ROOT/'src/package.xml')

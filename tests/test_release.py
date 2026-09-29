@@ -1,6 +1,6 @@
 """Verify release contents, reproducibility, Lua syntax, and behavior."""
 from pathlib import Path
-import importlib.util, os, shutil, subprocess, tempfile, unittest, xml.etree.ElementTree as ET
+import importlib.util, os, shutil, subprocess, tempfile, unittest, re, xml.etree.ElementTree as ET
 ROOT=Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('builder',ROOT/'scripts/build.py')
 builder=importlib.util.module_from_spec(spec); spec.loader.exec_module(builder)
@@ -35,4 +35,22 @@ class ReleaseTests(unittest.TestCase):
             check=Path(t)/'compile.lua';check.write_text('for _,p in ipairs(arg) do assert(loadfile(p)) end\n')
             run(check,*paths)
     def test_behavior(self):
-        print(run(ROOT/'tests/behavior.lua'))
+        with tempfile.TemporaryDirectory() as folder:
+            doc=ET.fromstring(builder.package_files()[builder.PACKAGE+'.xml'])
+            script=Path(folder)/'bootstrap.lua'
+            script.write_text(doc.findtext('./ScriptPackage/Script/script'))
+            print(run(ROOT/'tests/behavior.lua',script))
+
+    def test_aliases_and_upgrade_identity(self):
+        files=builder.package_files()
+        self.assertIn(b'mpackage = [[le-examine]]',files['config.lua'])
+        self.assertIn(b'LotJ Vendor Manager',files['config.lua'])
+        doc=ET.fromstring(files[builder.PACKAGE+'.xml'])
+        patterns=[re.compile(n.text) for n in doc.findall('./AliasPackage/Alias/regex')]
+        self.assertEqual(len(patterns),3)
+        for command in ('le','le 3','LE 3','le help','givevendor','givevendor sample 100',
+                        'givevendor sample 100 2','GIVEVENDOR sample 100 2','vendormgr','vendormgr help'):
+            self.assertEqual(sum(bool(p.fullmatch(command)) for p in patterns),1,command)
+        for command in ('list','give sample vendor','priceclanvendor sample 100','vendor',
+                        'vendor help','givevendorx sample 100','lex 3'):
+            self.assertFalse(any(p.fullmatch(command) for p in patterns),command)
